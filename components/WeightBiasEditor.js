@@ -144,7 +144,7 @@ export default function WeightBiasEditor({
 
             <p className="mt-2 text-[10px] text-zinc-400">
               Örnek satır (yuvarlı): [
-              {(Wl?.[0] ?? []).map((x) => fmt(x, 4)).join(", ")}]
+              {(Wl?.[0] ?? []).map((x) => fmt(x)).join(", ")}]
             </p>
           </div>
         );

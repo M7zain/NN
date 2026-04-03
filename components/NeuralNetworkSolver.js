@@ -588,7 +588,7 @@ export default function NeuralNetworkSolver() {
                     Normalize giriş (katman 0 / önceki katman çıkışları): [
                     {sm.xNorm.map((v) => fmt(v)).join(", ")}]
                   </p>
-                  <KaTeXBlock math="\mathrm{Net}_i^{(\ell)}=\sum_j w_{ij}^{(\ell)}\,a_j^{(\ell-1)}+b_i^{(\ell)},\quad a_i^{(\ell)}=f\!\big(\mathrm{Net}_i^{(\ell)}\big)" />
+                  <KaTeXBlock math="\mathrm{Net}_i^{(\ell)}=\sum_j W_{i,j}^{(\ell)}\,\mathrm{Out}_j^{(\ell-1)}+b_i^{(\ell)},\quad \mathrm{Out}_i^{(\ell)}=f\!\big(\mathrm{Net}_i^{(\ell)}\big)" />
                   {sm.forwardExplanation?.layers?.map((fl) => (
                     <div
                       key={fl.layer}
@@ -604,7 +604,7 @@ export default function NeuralNetworkSolver() {
                         >
                           <KaTeXBlock
                             display={false}
-                            math={`${n.netSymbol}=\\sum_j w_{${n.neuronIndex},j}^{(${n.layerIndex})}\\,a_j^{(${n.layerIndex - 1})}+b_${n.neuronIndex}^{(${n.layerIndex})}`}
+                            math={`${n.netSymbol}=\\sum_j W_{${n.neuronIndex},j}^{(${n.layerIndex})}\\,\\mathrm{Out}_j^{(${n.layerIndex - 1})}+b_${n.neuronIndex}^{(${n.layerIndex})}`}
                           />
                           <p className="mt-1 max-w-full break-words font-mono text-[11px] leading-relaxed text-zinc-800 dark:text-zinc-200">
                             {n.netEquationPlain}
@@ -724,7 +724,7 @@ export default function NeuralNetworkSolver() {
                   <p className="mt-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     d) Geri yayılım — δ terimleri ve zincir kuralı
                   </p>
-                  <KaTeXBlock math="\delta_i^{(L)} = E_i \cdot f'\!\big(\mathrm{Net}_i^{(L)}\big),\qquad \delta_j^{(\ell)} = \Big(\sum_k \delta_k^{(\ell+1)} W_{k,j}^{(\ell+1)}\Big)\cdot f'\!\big(\mathrm{Net}_j^{(\ell)}\big)" />
+                  <KaTeXBlock math="\begin{aligned}\mathrm{Net}_k^{(\ell+1)}&amp;=\sum_r W_{k,r}^{(\ell+1)}\,\mathrm{Out}_r^{(\ell)}+b_k^{(\ell+1)},\quad \mathrm{Out}_k^{(\ell+1)}=f\!\big(\mathrm{Net}_k^{(\ell+1)}\big)\\[0.4em]\delta_i^{(L)}&amp;=\frac{\partial E}{\partial \mathrm{Net}_i^{(L)}}=E_i\,f'\!\big(\mathrm{Net}_i^{(L)}\big),\quad E_i=d_i-\mathrm{Out}_i^{(L)},\ \mathrm{Out}_i^{(L)}=f\!\big(\mathrm{Net}_i^{(L)}\big)\\[0.4em]\delta_j^{(\ell)}&amp;=\Big(\sum_k \delta_k^{(\ell+1)}\,W_{k,j}^{(\ell+1)}\Big)\,f'\!\big(\mathrm{Net}_j^{(\ell)}\big)\end{aligned}" />
                   {sm.backwardExplanation?.blocks?.map((blk) => (
                     <div
                       key={blk.layer}
