@@ -233,14 +233,24 @@ export default function NeuralNetworkSolver() {
     <div className="mx-auto w-full min-w-0 max-w-5xl px-4 py-10 text-zinc-900 dark:text-zinc-100">
       <header className="mb-10 min-w-0 max-w-full overflow-hidden rounded-2xl border border-zinc-900 bg-zinc-950 text-zinc-100 shadow-sm">
         <div className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:gap-8 sm:px-6">
-          <Image
-            src="/karacode-logo-white.png"
-            alt="Karacode Labs"
-            width={260}
-            height={52}
-            className="h-10 w-auto max-w-[min(100%,280px)] shrink-0 object-contain object-left"
-            priority
-          />
+          <a
+            href="https://karacode.com.tr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-w-0 shrink-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4"
+          >
+            <Image
+              src="/karacode-logo-white.png"
+              alt="Karacode Labs"
+              width={260}
+              height={52}
+              className="h-10 w-auto max-w-[min(100%,280px)] object-contain object-left"
+              priority
+            />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
+              Karacode Labs
+            </span>
+          </a>
           <div className="min-w-0 flex-1 border-t border-zinc-800/80 pt-4 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
             <h1 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
               Sinir ağı — adım adım çözümü
