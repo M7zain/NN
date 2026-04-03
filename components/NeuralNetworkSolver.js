@@ -12,6 +12,9 @@ import katex from "katex";
 import "katex/dist/katex.min.css";
 import NetworkArchitectureVisual from "@/components/NetworkArchitectureVisual";
 import WeightBiasEditor from "@/components/WeightBiasEditor";
+import WeightUpdateVisual, {
+  buildWeightUpdateSteps,
+} from "@/components/WeightUpdateVisual";
 import {
   activationFns,
   buildEmptyWeights,
@@ -786,6 +789,36 @@ export default function NeuralNetworkSolver() {
                                   ) : null}
                                 </div>
                               ) : null}
+                              {st.chainDetails?.length ? (
+                                <div className="mt-2 min-w-0 max-w-full space-y-2 overflow-x-auto rounded-lg border border-indigo-200/80 bg-indigo-50/40 p-2 dark:border-indigo-900/50 dark:bg-indigo-950/20">
+                                  <p className="text-[10px] font-semibold text-indigo-900 dark:text-indigo-200">
+                                    Zincir kuralı — formüller
+                                  </p>
+                                  {st.chainDetails.map((cd, cdi) => (
+                                    <div
+                                      key={cdi}
+                                      className="min-w-0 border-t border-indigo-100 pt-2 first:border-0 first:pt-0 dark:border-indigo-900/40"
+                                    >
+                                      <p className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400">
+                                        {cd.label}
+                                      </p>
+                                      {cd.tex ? (
+                                        <div className="mt-1 min-w-0 max-w-full overflow-x-auto">
+                                          <KaTeXBlock
+                                            display={true}
+                                            math={cd.tex}
+                                          />
+                                        </div>
+                                      ) : null}
+                                      {cd.plain ? (
+                                        <p className="mt-1 max-w-full break-words font-mono text-[10px] text-zinc-700 dark:text-zinc-300">
+                                          {cd.plain}
+                                        </p>
+                                      ) : null}
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : null}
                               <p className="mt-1 max-w-full break-words font-mono text-[11px] leading-relaxed text-zinc-800 dark:text-zinc-200">
                                 {st.plain}
                               </p>
@@ -812,6 +845,13 @@ export default function NeuralNetworkSolver() {
                     e) Ağırlık ve bias güncellemeleri (η ={" "}
                     {fmt(result.learningRate ?? Number(learningRate))})
                   </p>
+                  <WeightUpdateVisual
+                    layerSizes={result.layerSizes}
+                    steps={buildWeightUpdateSteps(sm)}
+                    fmt={fmt}
+                    eta={result.learningRate ?? Number(learningRate)}
+                    sm={sm}
+                  />
                   {sm.deltaW.map((dw) => (
                     <div key={dw.fromLayer} className="mt-2 min-w-0 max-w-full">
                       <p className="text-xs text-zinc-600">
