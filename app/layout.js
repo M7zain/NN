@@ -15,6 +15,11 @@ export const metadata = {
   title: "Sinir ağı adım adım çözümü",
   description:
     "Min-max normalizasyon, ileri besleme, E=d-out, geri yayılım ve ağırlık güncelleme — epoch bazlı.",
+  icons: {
+    icon: [{ url: "/karacode-logo-white.png", type: "image/png" }],
+    apple: [{ url: "/karacode-logo-white.png", type: "image/png" }],
+    shortcut: "/karacode-logo-white.png",
+  },
 };
 
 export default function RootLayout({ children }) {
