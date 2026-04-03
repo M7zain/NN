@@ -40,8 +40,8 @@ function KaTeXBlock({ math, display = true }) {
     <Tag
       className={
         display
-          ? "my-2 max-w-full min-w-0 overflow-x-auto text-zinc-800 dark:text-zinc-100"
-          : "inline-block max-w-full min-w-0 overflow-x-auto align-middle text-zinc-800 dark:text-zinc-100"
+          ? "my-2 max-w-full min-w-0 overflow-x-auto text-zinc-800 dark:text-zinc-100 [&_.katex-display]:max-w-full [&_.katex]:max-w-full"
+          : "inline-block max-w-full min-w-0 overflow-x-auto align-middle text-zinc-800 dark:text-zinc-100 [&_.katex]:max-w-full"
       }
       dangerouslySetInnerHTML={{ __html: html }}
     />
@@ -490,7 +490,7 @@ export default function NeuralNetworkSolver() {
           <h2 className="text-lg font-semibold print:break-inside-avoid">
             Çözüm çıktısı
           </h2>
-          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-1 max-w-full break-words text-sm text-zinc-600 dark:text-zinc-400">
             Mimari (nöron sayıları):{" "}
             <strong>{result.layerSizes.join(" - ")}</strong>. MSE (tüm çıkışlar
             ortalaması), epoch sonunda güncel ağırlıklarla tüm örnekler
@@ -850,12 +850,12 @@ export default function NeuralNetworkSolver() {
               Son ağırlıklar ve bias değerleri
             </h3>
             {result.finalWeights.map((W, li) => (
-              <div key={li} className="mt-3">
+              <div key={li} className="mt-3 min-w-0 max-w-full">
                 <p className="text-xs font-medium text-zinc-600">
                   W{li + 1}
                 </p>
                 <MatrixTable rows={W} />
-                <p className="mt-1 text-xs font-medium text-zinc-600">
+                <p className="mt-1 max-w-full break-words text-xs font-medium text-zinc-600">
                   B{li + 1}: [
                   {result.finalBiases[li].map((v) => fmt(v)).join(", ")}]
                 </p>
