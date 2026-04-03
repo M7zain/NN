@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import NetworkArchitectureVisual from "@/components/NetworkArchitectureVisual";
@@ -34,8 +40,8 @@ function KaTeXBlock({ math, display = true }) {
     <Tag
       className={
         display
-          ? "my-2 overflow-x-auto text-zinc-800 dark:text-zinc-100"
-          : "inline text-zinc-800 dark:text-zinc-100"
+          ? "my-2 max-w-full min-w-0 overflow-x-auto text-zinc-800 dark:text-zinc-100"
+          : "inline-block max-w-full min-w-0 overflow-x-auto align-middle text-zinc-800 dark:text-zinc-100"
       }
       dangerouslySetInnerHTML={{ __html: html }}
     />
@@ -45,7 +51,7 @@ function KaTeXBlock({ math, display = true }) {
 function MatrixTable({ rows }) {
   if (!rows?.length) return null;
   return (
-    <div className="overflow-x-auto rounded border border-zinc-200 bg-white p-2 font-mono text-xs dark:border-zinc-700 dark:bg-zinc-900">
+    <div className="max-w-full min-w-0 overflow-x-auto rounded border border-zinc-200 bg-white p-2 font-mono text-xs dark:border-zinc-700 dark:bg-zinc-900">
       <table className="min-w-full border-collapse">
         <tbody>
           {rows.map((row, i) => (
@@ -77,8 +83,24 @@ export default function NeuralNetworkSolver() {
   const [jsonImport, setJsonImport] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  const resultRef = useRef(null);
 
   const actInfo = useMemo(() => activationFns(activation), [activation]);
+
+  useEffect(() => {
+    if (!result) return;
+    const id = requestAnimationFrame(() => {
+      if (typeof window === "undefined") return;
+      const narrow = window.matchMedia("(max-width: 1023px)").matches;
+      if (!narrow) return;
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      resultRef.current?.scrollIntoView({
+        behavior: reduce ? "auto" : "smooth",
+        block: "start",
+      });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [result]);
 
   const layerSizes = useMemo(() => {
     try {
@@ -208,21 +230,18 @@ export default function NeuralNetworkSolver() {
   ]);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 text-zinc-900 dark:text-zinc-100">
-      <header className="mb-10 overflow-hidden rounded-2xl border border-zinc-900 bg-zinc-950 text-zinc-100 shadow-sm">
-        <div className="flex flex-wrap items-center gap-4 px-5 py-5 sm:gap-5 sm:px-6">
+    <div className="mx-auto w-full min-w-0 max-w-5xl px-4 py-10 text-zinc-900 dark:text-zinc-100">
+      <header className="mb-10 min-w-0 max-w-full overflow-hidden rounded-2xl border border-zinc-900 bg-zinc-950 text-zinc-100 shadow-sm">
+        <div className="flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:gap-8 sm:px-6">
           <Image
             src="/karacode-logo-white.png"
             alt="Karacode Labs"
-            width={52}
+            width={260}
             height={52}
-            className="h-12 w-12 shrink-0 object-contain"
+            className="h-10 w-auto max-w-[min(100%,280px)] shrink-0 object-contain object-left"
             priority
           />
-          <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
-              Karacode Labs
-            </p>
+          <div className="min-w-0 flex-1 border-t border-zinc-800/80 pt-4 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
             <h1 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
               Sinir ağı — adım adım çözümü
             </h1>
@@ -235,7 +254,7 @@ export default function NeuralNetworkSolver() {
         </p>
       </header>
 
-      <section className="mb-8 rounded-xl border border-zinc-200 bg-zinc-50/80 p-5 dark:border-zinc-800 dark:bg-zinc-900/40">
+      <section className="mb-8 min-w-0 max-w-full rounded-xl border border-zinc-200 bg-zinc-50/80 p-5 dark:border-zinc-800 dark:bg-zinc-900/40">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">
           Kullanılan formüller
         </h2>
@@ -269,8 +288,8 @@ export default function NeuralNetworkSolver() {
         </div>
       </section>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_1.05fr]">
-        <div className="space-y-6">
+      <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:gap-10">
+        <div className="min-w-0 space-y-6">
           <label className="block">
             <span className="text-sm font-medium">
               Eğitim verisi (CSV: özellikler…, hedef)
@@ -369,7 +388,7 @@ export default function NeuralNetworkSolver() {
               {showAdvancedJson ? "Gelişmiş JSON ▲" : "Gelişmiş: JSON içe/dışa aktar ▼"}
             </button>
             {showAdvancedJson ? (
-              <div className="mt-3 space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-900/50">
+              <div className="mt-3 min-w-0 max-w-full space-y-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-900/50">
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <span className="text-xs font-medium text-zinc-600">
@@ -383,7 +402,7 @@ export default function NeuralNetworkSolver() {
                       Panoya kopyala
                     </button>
                   </div>
-                  <pre className="mt-2 max-h-40 overflow-auto rounded border border-zinc-200 bg-white p-2 font-mono text-[10px] dark:border-zinc-600 dark:bg-zinc-950">
+                  <pre className="mt-2 max-h-40 max-w-full min-w-0 overflow-auto rounded border border-zinc-200 bg-white p-2 font-mono text-[10px] break-words whitespace-pre-wrap dark:border-zinc-600 dark:bg-zinc-950">
                     {jsonExport}
                   </pre>
                 </div>
@@ -441,7 +460,7 @@ export default function NeuralNetworkSolver() {
           ) : null}
         </div>
 
-        <aside className="h-fit rounded-xl border border-dashed border-zinc-300 p-4 text-sm text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
+        <aside className="h-fit min-w-0 rounded-xl border border-dashed border-zinc-300 p-4 text-sm text-zinc-600 dark:border-zinc-700 dark:text-zinc-400">
           <p className="font-medium text-zinc-800 dark:text-zinc-200">
             Nasıl doldurulur?
           </p>
@@ -464,7 +483,8 @@ export default function NeuralNetworkSolver() {
 
       {result ? (
         <output
-          className="mt-12 block print:mt-4"
+          ref={resultRef}
+          className="mt-12 block w-full min-w-0 max-w-full scroll-mt-4 print:mt-4"
           aria-live="polite"
         >
           <h2 className="text-lg font-semibold print:break-inside-avoid">
@@ -478,14 +498,14 @@ export default function NeuralNetworkSolver() {
             <strong>{fmt(result.mseBeforeTraining)}</strong>
           </p>
 
-          <section className="mt-6 print:break-inside-avoid">
+          <section className="mt-6 min-w-0 max-w-full print:break-inside-avoid">
             <h3 className="text-base font-semibold">
               a) Lokal min–max normalizasyonu
             </h3>
             <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
               Her özellik sütunu için tablodaki min / max:
             </p>
-            <div className="mt-2 overflow-x-auto">
+            <div className="mt-2 min-w-0 max-w-full overflow-x-auto">
               <table className="min-w-full text-sm border-collapse">
                 <thead>
                   <tr className="border-b border-zinc-200 dark:border-zinc-700">
@@ -513,9 +533,9 @@ export default function NeuralNetworkSolver() {
             <p className="mt-3 text-sm font-medium">
               Normalize edilmiş örnekler:
             </p>
-            <ul className="mt-1 font-mono text-xs">
+            <ul className="mt-1 max-w-full font-mono text-xs break-words">
               {result.normalizedTable.map((row, i) => (
-                <li key={i}>
+                <li key={i} className="overflow-x-auto">
                   Örnek {i + 1}: x_norm = [
                   {row.features.map((v) => fmt(v)).join(", ")}], d = [
                   {row.target.map((v) => fmt(v)).join(", ")}]
@@ -527,7 +547,7 @@ export default function NeuralNetworkSolver() {
           {result.epochs.map((ep) => (
             <section
               key={ep.epoch}
-              className="mt-10 border-t border-zinc-200 pt-8 dark:border-zinc-800 print:break-inside-avoid"
+              className="mt-10 min-w-0 max-w-full border-t border-zinc-200 pt-8 dark:border-zinc-800 print:break-inside-avoid"
             >
               <h3 className="text-lg font-semibold text-emerald-800 dark:text-emerald-300">
                 Epoch {ep.epoch}
@@ -540,9 +560,9 @@ export default function NeuralNetworkSolver() {
               {ep.samples.map((sm) => (
                 <article
                   key={`${ep.epoch}-${sm.sampleIndex}`}
-                  className="mt-8 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-950/50"
+                  className="mt-8 min-w-0 max-w-full rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-950/50"
                 >
-                  <h4 className="font-semibold">
+                  <h4 className="break-words font-semibold">
                     Örnek {sm.sampleIndex} — ham giriş: [
                     {sm.rawFeatures.map((v) => fmt(v)).join(", ")}], hedef d = [
                     {sm.target.map((v) => fmt(v)).join(", ")}]
@@ -551,7 +571,7 @@ export default function NeuralNetworkSolver() {
                   <p className="mt-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     b) İleri besleme (Net ve Out) — nöron nöron
                   </p>
-                  <p className="text-xs text-zinc-500">
+                  <p className="max-w-full break-words text-xs text-zinc-500">
                     Normalize giriş (katman 0 / önceki katman çıkışları): [
                     {sm.xNorm.map((v) => fmt(v)).join(", ")}]
                   </p>
@@ -559,7 +579,7 @@ export default function NeuralNetworkSolver() {
                   {sm.forwardExplanation?.layers?.map((fl) => (
                     <div
                       key={fl.layer}
-                      className="mt-4 rounded-lg border border-sky-200/80 bg-sky-50/50 p-3 dark:border-sky-900/50 dark:bg-sky-950/30"
+                      className="mt-4 min-w-0 max-w-full rounded-lg border border-sky-200/80 bg-sky-50/50 p-3 dark:border-sky-900/50 dark:bg-sky-950/30"
                     >
                       <p className="text-xs font-semibold text-sky-900 dark:text-sky-200">
                         Katman {fl.layer}
@@ -567,16 +587,16 @@ export default function NeuralNetworkSolver() {
                       {fl.neurons.map((n) => (
                         <div
                           key={n.neuronIndex}
-                          className="mt-3 border-t border-sky-100 pt-3 first:mt-2 first:border-0 first:pt-0 dark:border-sky-900/40"
+                          className="mt-3 min-w-0 max-w-full border-t border-sky-100 pt-3 first:mt-2 first:border-0 first:pt-0 dark:border-sky-900/40"
                         >
                           <KaTeXBlock
                             display={false}
                             math={`${n.netSymbol}=\\sum_j w_{${n.neuronIndex},j}^{(${n.layerIndex})}\\,a_j^{(${n.layerIndex - 1})}+b_${n.neuronIndex}^{(${n.layerIndex})}`}
                           />
-                          <p className="mt-1 font-mono text-[11px] leading-relaxed text-zinc-800 dark:text-zinc-200">
+                          <p className="mt-1 max-w-full break-words font-mono text-[11px] leading-relaxed text-zinc-800 dark:text-zinc-200">
                             {n.netEquationPlain}
                           </p>
-                          <div className="mt-2 overflow-x-auto">
+                          <div className="mt-2 min-w-0 max-w-full overflow-x-auto">
                             <table className="min-w-full border-collapse text-[10px]">
                               <thead>
                                 <tr className="border-b border-zinc-200 dark:border-zinc-700">
@@ -622,14 +642,14 @@ export default function NeuralNetworkSolver() {
                               </tbody>
                             </table>
                           </div>
-                          <p className="mt-2 font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
+                          <p className="mt-2 max-w-full break-words font-mono text-[11px] text-zinc-700 dark:text-zinc-300">
                             Toplam (Σ a·w) + b = {fmt(n.sumWeightedInputs)} +{" "}
                             {fmt(n.bias)} ={" "}
                             <strong>{fmt(n.net)}</strong> ⇒ Out = f(Net) ={" "}
                             <strong>{fmt(n.out)}</strong>
                           </p>
                           {n.activationTex ? (
-                            <div className="mt-3 rounded border border-sky-100 bg-white/80 p-2 dark:border-sky-900/50 dark:bg-zinc-900/40">
+                            <div className="mt-3 min-w-0 max-w-full rounded border border-sky-100 bg-white/80 p-2 dark:border-sky-900/50 dark:bg-zinc-900/40">
                               <p className="text-[10px] font-medium text-zinc-500">
                                 Aktivasyon f (seçilen fonksiyon)
                               </p>
@@ -637,7 +657,7 @@ export default function NeuralNetworkSolver() {
                             </div>
                           ) : null}
                           {n.derivativeKatex?.texGeneral ? (
-                            <div className="mt-2 rounded border border-amber-100 bg-amber-50/60 p-2 dark:border-amber-900/40 dark:bg-amber-950/20">
+                            <div className="mt-2 min-w-0 max-w-full rounded border border-amber-100 bg-amber-50/60 p-2 dark:border-amber-900/40 dark:bg-amber-950/20">
                               <p className="text-[10px] font-medium text-amber-900 dark:text-amber-200">
                                 f&apos; — genel formül
                               </p>
@@ -664,8 +684,8 @@ export default function NeuralNetworkSolver() {
                     Özet vektörler (aynı katman)
                   </p>
                   {sm.nets.map((layer) => (
-                    <div key={layer.layer} className="mt-1">
-                      <p className="font-mono text-[11px] text-zinc-500">
+                    <div key={layer.layer} className="mt-1 min-w-0 max-w-full">
+                      <p className="max-w-full break-words font-mono text-[11px] text-zinc-500">
                         Katman {layer.layer} Net: [
                         {layer.values.map((v) => fmt(v)).join(", ")}] · Out: [
                         {sm.activations
@@ -676,7 +696,7 @@ export default function NeuralNetworkSolver() {
                       </p>
                     </div>
                   ))}
-                  <p className="mt-2 text-xs text-zinc-500">
+                  <p className="mt-2 max-w-full break-words text-xs text-zinc-500">
                     Çıkış vektörü Out: [
                     {sm.output.map((v) => fmt(v)).join(", ")}]
                   </p>
@@ -684,7 +704,7 @@ export default function NeuralNetworkSolver() {
                   <p className="mt-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     c) Hata E = d − Out
                   </p>
-                  <p className="font-mono text-xs">
+                  <p className="max-w-full break-words font-mono text-xs">
                     E = [{sm.E.map((v) => fmt(v)).join(", ")}]
                   </p>
 
@@ -695,7 +715,7 @@ export default function NeuralNetworkSolver() {
                   {sm.backwardExplanation?.blocks?.map((blk) => (
                     <div
                       key={blk.layer}
-                      className="mt-4 rounded-lg border border-violet-200/80 bg-violet-50/50 p-3 dark:border-violet-900/50 dark:bg-violet-950/25"
+                      className="mt-4 min-w-0 max-w-full rounded-lg border border-violet-200/80 bg-violet-50/50 p-3 dark:border-violet-900/50 dark:bg-violet-950/25"
                     >
                       <p className="text-xs font-semibold text-violet-900 dark:text-violet-200">
                         {blk.title}
@@ -703,20 +723,20 @@ export default function NeuralNetworkSolver() {
                       {blk.neurons.map((neu) => (
                         <div
                           key={`${blk.layer}-${neu.neuronIndex}`}
-                          className="mt-3 border-t border-violet-100 pt-3 first:mt-2 first:border-0 first:pt-0 dark:border-violet-900/40"
+                          className="mt-3 min-w-0 max-w-full border-t border-violet-100 pt-3 first:mt-2 first:border-0 first:pt-0 dark:border-violet-900/40"
                         >
                           <p className="text-[11px] font-medium text-zinc-700 dark:text-zinc-300">
                             Nöron {neu.neuronIndex} — δ = {fmt(neu.delta)}
                           </p>
                           {neu.backTerms?.length ? (
-                            <ul className="mt-1 space-y-0.5 font-mono text-[10px] text-zinc-600 dark:text-zinc-400">
+                            <ul className="mt-1 max-w-full space-y-0.5 break-words font-mono text-[10px] text-zinc-600 dark:text-zinc-400">
                               {neu.backTerms.map((bt, bi) => (
                                 <li key={bi}>{bt.plain}</li>
                               ))}
                             </ul>
                           ) : null}
                           {neu.steps.map((st, si) => (
-                            <div key={si} className="mt-2">
+                            <div key={si} className="mt-2 min-w-0 max-w-full">
                               <p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500">
                                 {st.title}
                               </p>
@@ -725,7 +745,7 @@ export default function NeuralNetworkSolver() {
                               ) : null}
                               {st.title === "Aktivasyon türevi" &&
                               st.activationTex ? (
-                                <div className="mt-2 rounded border border-zinc-200 bg-white/90 p-2 dark:border-zinc-600 dark:bg-zinc-900/50">
+                                <div className="mt-2 min-w-0 max-w-full rounded border border-zinc-200 bg-white/90 p-2 dark:border-zinc-600 dark:bg-zinc-900/50">
                                   <p className="text-[10px] text-zinc-500">
                                     Önce f (aktivasyon) — seçilen fonksiyon
                                   </p>
@@ -736,7 +756,7 @@ export default function NeuralNetworkSolver() {
                                 </div>
                               ) : null}
                               {st.texGeneral ? (
-                                <div className="mt-2 rounded border border-amber-100 bg-amber-50/70 p-2 dark:border-amber-900/40 dark:bg-amber-950/25">
+                                <div className="mt-2 min-w-0 max-w-full rounded border border-amber-100 bg-amber-50/70 p-2 dark:border-amber-900/40 dark:bg-amber-950/25">
                                   <p className="text-[10px] font-medium text-amber-900 dark:text-amber-200">
                                     f&apos; — genel türev formülü
                                   </p>
@@ -756,7 +776,7 @@ export default function NeuralNetworkSolver() {
                                   ) : null}
                                 </div>
                               ) : null}
-                              <p className="mt-1 font-mono text-[11px] leading-relaxed text-zinc-800 dark:text-zinc-200">
+                              <p className="mt-1 max-w-full break-words font-mono text-[11px] leading-relaxed text-zinc-800 dark:text-zinc-200">
                                 {st.plain}
                               </p>
                             </div>
@@ -769,7 +789,10 @@ export default function NeuralNetworkSolver() {
                     δ vektör özeti
                   </p>
                   {sm.deltas.map((d) => (
-                    <p key={d.layer} className="font-mono text-[11px] text-zinc-500">
+                    <p
+                      key={d.layer}
+                      className="max-w-full break-words font-mono text-[11px] text-zinc-500"
+                    >
                       Katman {d.layer}: δ = [
                       {d.values.map((v) => fmt(v)).join(", ")}]
                     </p>
@@ -780,7 +803,7 @@ export default function NeuralNetworkSolver() {
                     {fmt(result.learningRate ?? Number(learningRate))})
                   </p>
                   {sm.deltaW.map((dw) => (
-                    <div key={dw.fromLayer} className="mt-2">
+                    <div key={dw.fromLayer} className="mt-2 min-w-0 max-w-full">
                       <p className="text-xs text-zinc-600">
                         ΔW{dw.fromLayer + 1} ({dw.matrix.length}×
                         {dw.matrix[0]?.length ?? 0}):
@@ -789,9 +812,9 @@ export default function NeuralNetworkSolver() {
                     </div>
                   ))}
                   {sm.deltaB.map((db) => (
-                    <div key={db.layer} className="mt-2">
+                    <div key={db.layer} className="mt-2 min-w-0 max-w-full">
                       <p className="text-xs text-zinc-600">ΔB{db.layer}:</p>
-                      <p className="font-mono text-xs">
+                      <p className="max-w-full break-words font-mono text-xs">
                         [{db.values.map((v) => fmt(v)).join(", ")}]
                       </p>
                     </div>
@@ -806,7 +829,7 @@ export default function NeuralNetworkSolver() {
             </section>
           ))}
 
-          <section className="mt-10 print:break-inside-avoid">
+          <section className="mt-10 min-w-0 max-w-full print:break-inside-avoid">
             <h3 className="text-base font-semibold">f) Epoch’lara göre MSE</h3>
             <ul className="mt-2 space-y-1 text-sm">
               <li>
@@ -822,7 +845,7 @@ export default function NeuralNetworkSolver() {
             </ul>
           </section>
 
-          <section className="mt-8 print:break-inside-avoid">
+          <section className="mt-8 min-w-0 max-w-full print:break-inside-avoid">
             <h3 className="text-base font-semibold">
               Son ağırlıklar ve bias değerleri
             </h3>
@@ -842,7 +865,7 @@ export default function NeuralNetworkSolver() {
         </output>
       ) : null}
 
-      <footer className="mt-16 border-t border-zinc-200 pt-8 text-center text-xs text-zinc-500 dark:border-zinc-800">
+      <footer className="mt-16 min-w-0 max-w-full border-t border-zinc-200 pt-8 text-center text-xs text-zinc-500 dark:border-zinc-800">
         <a
           href="https://karacode.com.tr"
           target="_blank"

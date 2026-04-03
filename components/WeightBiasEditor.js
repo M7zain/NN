@@ -48,7 +48,7 @@ export default function WeightBiasEditor({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="min-w-0 max-w-full space-y-8">
       {Array.from({ length: L }).map((_, l) => {
         const rows = layerSizes[l + 1];
         const cols = layerSizes[l];
@@ -62,7 +62,7 @@ export default function WeightBiasEditor({
         return (
           <div
             key={l}
-            className="overflow-x-auto rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-950/50"
+            className="min-w-0 max-w-full overflow-x-auto rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-950/50"
           >
             <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
               Katman {l + 1}:{" "}

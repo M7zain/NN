@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Sinir ağı adım adım  çözümü",
+  title: "Sinir ağı adım adım çözümü",
   description:
     "Min-max normalizasyon, ileri besleme, E=d-out, geri yayılım ve ağırlık güncelleme — epoch bazlı.",
 };
@@ -21,9 +21,15 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body
+        className="min-h-full flex flex-col overflow-x-hidden"
+        suppressHydrationWarning
+      >
+        {children}
+      </body>
     </html>
   );
 }
